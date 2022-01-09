@@ -1,5 +1,6 @@
 package com.lespania.controller;
 
+import com.lespania.annotation.DefaultExceptionMessage;
 import com.lespania.dto.UserDTO;
 import com.lespania.entity.ResponseWrapper;
 import com.lespania.entity.User;
@@ -8,6 +9,8 @@ import com.lespania.exception.TicketingProjectException;
 import com.lespania.util.MapperUtil;
 import com.lespania.service.UserService;
 import com.lespania.util.JWTUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
 
+@Tag(name = "Authentication Controller",description = "Authenticate API")
 @RestController
 public class LoginController {
 
@@ -32,6 +36,8 @@ public class LoginController {
 		this.jwtUtil = jwtUtil;
 	}
 
+	@DefaultExceptionMessage(defaultMessage = "Bad Credentials")
+	@Operation(summary = "Login to application")
 	@PostMapping("/authenticate")
 	public ResponseEntity<ResponseWrapper> doLogin(
 			@RequestBody AuthenticationRequest authenticationRequest)

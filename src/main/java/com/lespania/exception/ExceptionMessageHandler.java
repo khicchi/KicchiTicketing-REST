@@ -45,7 +45,9 @@ public class ExceptionMessageHandler {
                     .build();
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(ResponseWrapper.builder().success(false).message("Action failed: An error occurred!").code(HttpStatus.INTERNAL_SERVER_ERROR.value()).build(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(ResponseWrapper.builder()
+                .success(false).message("Action failed: An error occurred!")
+                .code(HttpStatus.INTERNAL_SERVER_ERROR.value()).build(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
     private Optional<DefaultExceptionMessageDto> getMessageFromAnnotation(Method method) {
         com.lespania.annotation.DefaultExceptionMessage defaultExceptionMessage =
