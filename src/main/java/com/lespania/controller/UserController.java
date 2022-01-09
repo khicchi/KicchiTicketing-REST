@@ -12,6 +12,7 @@ import com.lespania.service.RoleService;
 import com.lespania.service.UserService;
 import com.lespania.util.MapperUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +22,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("/user")
+@RestController
+@RequestMapping("/api/v1/user")
+@Tag(name = "User Controller",description = "User API")
 public class UserController {
     @Value("${app.local-url}")
     private String BASE_URL;
