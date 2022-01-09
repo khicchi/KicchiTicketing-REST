@@ -26,3 +26,6 @@ spring:
 security:
   jwt:
     secret-key: kicchi
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
