@@ -2,9 +2,7 @@ package com.lespania.implementation;
 
 import com.lespania.dto.UserDTO;
 import com.lespania.entity.User;
-import com.lespania.entity.common.UserPrincipal;
-import com.lespania.mapper.MapperUtil;
-import com.lespania.repository.UserRepository;
+import com.lespania.util.MapperUtil;
 import com.lespania.service.SecurityService;
 import com.lespania.service.UserService;
 import org.springframework.security.core.GrantedAuthority;

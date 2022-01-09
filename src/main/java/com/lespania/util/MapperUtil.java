@@ -1,4 +1,4 @@
-package com.lespania.mapper;
+package com.lespania.util;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
