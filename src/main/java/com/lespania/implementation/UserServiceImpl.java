@@ -12,10 +12,15 @@ import com.lespania.service.TaskService;
 import com.lespania.service.UserService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -135,5 +140,18 @@ public class UserServiceImpl implements UserService {
         User confirmedUser = userRepository.save(user);
 
         return mapperUtil.convert(confirmedUser,new UserDTO());
+    }
+
+    private void checkForAuthorities(User user) throws AccessDeniedException {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(authentication!=null && !authentication.getName().equals("anonymousUser")){
+
+            Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+
+            if(!(authentication.getName().equals(user.getId().toString()) || roles.contains("Admin"))){
+                throw new AccessDeniedException("Access is denied");
+            }
+        }
     }
 }
