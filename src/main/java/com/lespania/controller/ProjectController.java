@@ -72,4 +72,14 @@ public class ProjectController {
         ProjectDTO updatedProject = projectService.update(projectDTO);
         return ResponseEntity.ok(new ResponseWrapper("Project is updated",updatedProject));
     }
+
+    @DeleteMapping("/{projectcode}")
+    @Operation(summary = "Delete project")
+    @DefaultExceptionMessage(defaultMessage = "Failed to delete project!")
+    @PreAuthorize("hasAnyAuthority('Admin','Manager')")
+    public ResponseEntity<ResponseWrapper> deleteProject(@PathVariable("projectcode") String projectcode)
+                                                                    throws TicketingProjectException {
+        projectService.delete(projectcode);
+        return ResponseEntity.ok(new ResponseWrapper("Project is deleted"));
+    }
 }
