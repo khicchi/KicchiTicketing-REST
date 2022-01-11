@@ -116,11 +116,18 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectDTO> listAllProjectDetails() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserDTO currentUserDTO = userService.findByUserName(username);
-        User user = mapperUtil.convert(currentUserDTO,new User());
+    public List<ProjectDTO> listAllProjectDetails() throws TicketingProjectException {
+        //since we changed our structure to get id we changed this line as well
+        String id = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long currentId = Long.parseLong(id);
+
+        User user = userRepository.findById(currentId).orElseThrow(() -> new TicketingProjectException("This manager does not exists"));
+
         List<Project> list = projectRepository.findAllByAssignedManager(user);
+
+        if(list.size() == 0 ){
+            throw new TicketingProjectException("This manager does not have any project assigned");
+        }
 
         return list.stream().map(project -> {
             ProjectDTO obj = mapperUtil.convert(project,new ProjectDTO());
