@@ -127,17 +127,17 @@ public class TaskServiceImpl implements TaskService {
         return mapperUtil.convert(save,new TaskDTO());
     }
 
-    @Override
-    public List<TaskDTO> listAllTasksByStatus(Status status) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUserName(username);
-        List<Task> list = taskRepository.findAllByTaskStatusAndAssignedEmployee(status,user);
-        return list.stream().map(taskMapper::convertToDto).collect(Collectors.toList());
-    }
+//    @Override
+//    public List<TaskDTO> listAllTasksByStatus(Status status) {
+//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+//        User user = userRepository.findByUserName(username);
+//        List<Task> list = taskRepository.findAllByTaskStatusAndAssignedEmployee(status,user);
+//        return list.stream().map(taskMapper::convertToDto).collect(Collectors.toList());
+//    }
 
     @Override
     public List<TaskDTO> readAllByEmployee(User assignedEmployee) {
         List<Task> tasks = taskRepository.findAllByAssignedEmployee(assignedEmployee);
-        return tasks.stream().map(taskMapper::convertToDto).collect(Collectors.toList());
+        return tasks.stream().map(obj -> mapperUtil.convert(obj, new TaskDTO())).collect(Collectors.toList());
     }
 }
