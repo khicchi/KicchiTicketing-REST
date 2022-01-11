@@ -42,4 +42,14 @@ public class ProjectController {
         return ResponseEntity.ok(new ResponseWrapper("Project are retrieved",projectDTOS));
     }
 
+    @GetMapping("/{projectcode}")
+    @Operation(summary = "Read by project code")
+    @DefaultExceptionMessage(defaultMessage = "Something went wrong, try again!")
+    @PreAuthorize("hasAnyAuthority('Admin','Manager')")
+    public ResponseEntity<ResponseWrapper> readByProjectCode(
+                                            @PathVariable("projectcode") String projectcode){
+        ProjectDTO projectDTO = projectService.getByProjectCode(projectcode);
+        return ResponseEntity.ok(new ResponseWrapper("Project is retrieved",projectDTO));
+    }
+
 }
