@@ -6,6 +6,7 @@ import com.lespania.dto.TaskDTO;
 import com.lespania.dto.UserDTO;
 import com.lespania.entity.ResponseWrapper;
 import com.lespania.enums.Status;
+import com.lespania.exception.TicketingProjectException;
 import com.lespania.service.ProjectService;
 import com.lespania.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,6 +50,16 @@ public class ProjectController {
     public ResponseEntity<ResponseWrapper> readByProjectCode(
                                             @PathVariable("projectcode") String projectcode){
         ProjectDTO projectDTO = projectService.getByProjectCode(projectcode);
+        return ResponseEntity.ok(new ResponseWrapper("Project is retrieved",projectDTO));
+    }
+
+    @PostMapping
+    @Operation(summary = "Create project")
+    @DefaultExceptionMessage(defaultMessage = "Something went wrong, try again!")
+    @PreAuthorize("hasAnyAuthority('Admin','Manager')")
+    public ResponseEntity<ResponseWrapper> create(@RequestBody ProjectDTO projectDTO)
+            throws TicketingProjectException {
+        ProjectDTO createdProject = projectService.save(projectDTO);
         return ResponseEntity.ok(new ResponseWrapper("Project is retrieved",projectDTO));
     }
 
