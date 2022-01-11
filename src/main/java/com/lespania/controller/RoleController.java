@@ -30,7 +30,8 @@ public class RoleController {
     @PreAuthorize("hasAuthority('Admin')")
     public ResponseEntity<ResponseWrapper> readAll(){
         List<RoleDTO> roleDTOList = roleService.listAllRoles();
-        return ResponseEntity.ok(new ResponseWrapper("Successfully retrieved all roles",roleDTOList));
+        return ResponseEntity.ok(new ResponseWrapper("Successfully retrieved all roles",
+                roleDTOList));
 
     }
 }

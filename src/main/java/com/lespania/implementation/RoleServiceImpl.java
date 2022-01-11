@@ -5,6 +5,7 @@ import com.lespania.entity.Role;
 import com.lespania.mapper.RoleMapper;
 import com.lespania.repository.RoleRepository;
 import com.lespania.service.RoleService;
+import com.lespania.util.MapperUtil;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +15,12 @@ import java.util.stream.Collectors;
 @Service
 public class RoleServiceImpl implements RoleService {
 
-
     private RoleRepository roleRepository;
-    private RoleMapper roleMapper;
+    private MapperUtil mapperUtil;
 
-    public RoleServiceImpl(@Lazy RoleRepository roleRepository, RoleMapper roleMapper) {
+    public RoleServiceImpl(RoleRepository roleRepository, MapperUtil mapperUtil) {
         this.roleRepository = roleRepository;
-        this.roleMapper = roleMapper;
+        this.mapperUtil = mapperUtil;
     }
 
     @Override
