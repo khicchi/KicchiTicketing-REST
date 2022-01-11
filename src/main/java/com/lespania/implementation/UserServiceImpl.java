@@ -49,8 +49,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO findByUserName(String username) {
+    public UserDTO findByUserName(String username) throws AccessDeniedException {
         User user = userRepository.findByUserName(username);
+        checkForAuthorities(user);
         return mapperUtil.convert(user,new UserDTO());
     }
 
@@ -72,12 +73,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO update(UserDTO dto) {
+    public UserDTO update(UserDTO dto) throws TicketingProjectException, AccessDeniedException {
         //Find current user
         User user = userRepository.findByUserName(dto.getUserName());
+
+        if(user == null)
+            throw new TicketingProjectException("User Does Not Exists");
+
         //Map update user dto to entity object
         User convertedUser = mapperUtil.convert(dto,new User());
         convertedUser.setPassWord(passwordEncoder.encode(convertedUser.getPassWord()));
+
+        if(!user.isEnabled())
+            throw new TicketingProjectException("User is not confirmed");
+
+        checkForAuthorities(user);
+
         convertedUser.setEnabled(true);
 
         //set id to the converted object
