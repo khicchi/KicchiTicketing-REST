@@ -121,7 +121,8 @@ public class ProjectServiceImpl implements ProjectService {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
         Long currentId = Long.parseLong(id);
 
-        User user = userRepository.findById(currentId).orElseThrow(() -> new TicketingProjectException("This manager does not exists"));
+        User user = userRepository.findById(currentId).orElseThrow(() ->
+                new TicketingProjectException("This manager does not exists"));
 
         List<Project> list = projectRepository.findAllByAssignedManager(user);
 
