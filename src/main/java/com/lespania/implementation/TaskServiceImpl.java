@@ -10,6 +10,7 @@ import com.lespania.mapper.TaskMapper;
 import com.lespania.repository.TaskRepository;
 import com.lespania.repository.UserRepository;
 import com.lespania.service.TaskService;
+import com.lespania.util.MapperUtil;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -22,16 +23,14 @@ import java.util.stream.Collectors;
 @Service
 public class TaskServiceImpl implements TaskService {
 
-    TaskRepository taskRepository;
-    TaskMapper taskMapper;
-    ProjectMapper projectMapper;
-    UserRepository userRepository;
+    private TaskRepository taskRepository;
+    private UserRepository userRepository;
+    private MapperUtil mapperUtil;
 
-    public TaskServiceImpl(@Lazy TaskRepository taskRepository, @Lazy TaskMapper taskMapper, @Lazy ProjectMapper projectMapper, @Lazy UserRepository userRepository) {
+    public TaskServiceImpl(TaskRepository taskRepository, UserRepository userRepository, MapperUtil mapperUtil) {
         this.taskRepository = taskRepository;
-        this.taskMapper = taskMapper;
-        this.projectMapper = projectMapper;
         this.userRepository = userRepository;
+        this.mapperUtil = mapperUtil;
     }
 
     @Override
