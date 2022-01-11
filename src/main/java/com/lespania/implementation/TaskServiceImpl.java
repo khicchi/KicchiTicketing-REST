@@ -49,11 +49,12 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task save(TaskDTO dto) {
+    public TaskDTO save(TaskDTO dto) {
         dto.setTaskStatus(Status.OPEN);
         dto.setAssignedDate(LocalDate.now());
-        Task task = taskMapper.convertToEntity(dto);
-            return taskRepository.save(task);
+        Task task = mapperUtil.convert(dto,new Task());
+        Task save = taskRepository.save(task);
+        return mapperUtil.convert(save,new TaskDTO());
     }
 
     @Override
