@@ -2,6 +2,7 @@ package com.lespania.implementation;
 
 import com.lespania.dto.ProjectDTO;
 import com.lespania.dto.TaskDTO;
+import com.lespania.entity.Project;
 import com.lespania.entity.Task;
 import com.lespania.entity.User;
 import com.lespania.enums.Status;
@@ -97,12 +98,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     public List<TaskDTO> listAllByProject(ProjectDTO project){
-
-        List<Task> list = taskRepository.findAllByProject(projectMapper.convertToEntity(project));
-
-        return list.stream().map(obj -> {
-            return taskMapper.convertToDto(obj);
-        }).collect(Collectors.toList());
+        List<Task> list = taskRepository.findAllByProject(mapperUtil.convert(project,new Project()));
+        return list.stream().map(obj -> mapperUtil.convert(obj,new TaskDTO())).collect(Collectors.toList());
     }
 
     @Override
