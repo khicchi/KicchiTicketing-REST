@@ -1,6 +1,7 @@
 package com.lespania.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.lespania.enums.Status;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Where(clause = "is_deleted=false")
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer"},ignoreUnknown = true)
 public class Project extends BaseEntity {
 
     @Column(unique = true)

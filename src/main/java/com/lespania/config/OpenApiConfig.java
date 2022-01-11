@@ -23,7 +23,8 @@ public class OpenApiConfig {
         securitySchemeItem.setIn(SecurityScheme.In.HEADER);
         securitySchemeItem.setName("Authorization");
         Info infoVersion = new Info().title("Kicchi Ticketing Application").version("snapshot");
-        SecurityRequirement securityItem = new SecurityRequirement().addList("bearer-jwt", Arrays.asList("read","write"));
+        SecurityRequirement securityItem = new SecurityRequirement().addList("bearer-jwt",
+                Arrays.asList("read","write"));
 
         return new OpenAPI()
                 .components(new Components()

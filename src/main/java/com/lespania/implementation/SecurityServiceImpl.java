@@ -36,7 +36,7 @@ public class SecurityServiceImpl implements SecurityService {
         }
 
         return new org.springframework.security.core.userdetails.User(
-                user.getId().toString(),user.getPassWord(),listAuthorities(user));
+                user.getId().toString(), user.getPassWord(), listAuthorities(user));
     }
 
     private Collection<? extends GrantedAuthority> listAuthorities(UserDTO user){

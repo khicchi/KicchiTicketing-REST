@@ -1,5 +1,6 @@
 package com.lespania.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.lespania.enums.Gender;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer"},ignoreUnknown = true)
 public class UserDTO {
 
     private Long id;

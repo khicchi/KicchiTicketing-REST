@@ -1,6 +1,7 @@
 package com.lespania.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.lespania.enums.Status;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer"},ignoreUnknown = true)
 public class TaskDTO {
 
     private Long id;

@@ -22,10 +22,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/user")
 @Tag(name = "User Controller",description = "User API")
 public class UserController {
+
     @Value("${app.local-url}")
     private String BASE_URL;
 
@@ -52,6 +56,24 @@ public class UserController {
         sendEmail(createEmail(createdUser));
         return ResponseEntity.ok(new ResponseWrapper(
                 "User has been created!",createdUser));
+    }
+
+    @GetMapping
+    @DefaultExceptionMessage(defaultMessage = "Something went wrong, try again!")
+    @Operation(summary = "Read All Users")
+    @PreAuthorize("hasAuthority('Admin')")
+    public ResponseEntity<ResponseWrapper> readAll(){
+        List<UserDTO> result = userService.listAllUsers();
+        return ResponseEntity.ok(new ResponseWrapper("Successfully retrieved users",result));
+    }
+
+    @GetMapping("/{username}")
+    @DefaultExceptionMessage(defaultMessage = "Something went wrong, try again!")
+    @Operation(summary = "Read by username")
+    //Only admin should see other profiles or current user can see his/her profile
+    public ResponseEntity<ResponseWrapper> readByUsername(@PathVariable("username") String username) throws AccessDeniedException {
+        UserDTO user = userService.findByUserName(username);
+        return ResponseEntity.ok(new ResponseWrapper("Successfully retrieved user",user));
     }
 
     private MailDTO createEmail(UserDTO userDTO){

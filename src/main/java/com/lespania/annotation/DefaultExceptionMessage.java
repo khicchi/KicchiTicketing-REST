@@ -9,5 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DefaultExceptionMessage {
 
-    String defaultMessage() default "";
+    String defaultMessage() default "ali";
 }

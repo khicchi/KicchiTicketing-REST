@@ -36,7 +36,7 @@ public class JWTUtil {
                 .setClaims(claims)
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 *10)) //10 hours token validity
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 *100)) //10 hours token validity
                 .signWith(SignatureAlgorithm.HS256,secret).compact();
 
     }
