@@ -71,9 +71,29 @@ public class UserController {
     @DefaultExceptionMessage(defaultMessage = "Something went wrong, try again!")
     @Operation(summary = "Read by username")
     //Only admin should see other profiles or current user can see his/her profile
-    public ResponseEntity<ResponseWrapper> readByUsername(@PathVariable("username") String username) throws AccessDeniedException {
+    public ResponseEntity<ResponseWrapper> readByUsername(@PathVariable("username") String username)
+            throws AccessDeniedException {
         UserDTO user = userService.findByUserName(username);
         return ResponseEntity.ok(new ResponseWrapper("Successfully retrieved user",user));
+    }
+
+    @PutMapping
+    @DefaultExceptionMessage(defaultMessage = "Something went wrong, try again!")
+    @Operation(summary = "Update User")
+    public ResponseEntity<ResponseWrapper> updateUser(@RequestBody UserDTO user)
+            throws TicketingProjectException, AccessDeniedException {
+        UserDTO updatedUser = userService.update(user);
+        return ResponseEntity.ok(new ResponseWrapper("Successfully updated",updatedUser));
+    }
+
+    @DeleteMapping("/{username}")
+    @DefaultExceptionMessage(defaultMessage = "Something went wrong, try again!")
+    @Operation(summary = "Delete User")
+    @PreAuthorize("hasAuthority('Admin')")
+    public ResponseEntity<ResponseWrapper> deleteUser(@PathVariable("username") String username)
+            throws TicketingProjectException {
+        userService.delete(username);
+        return ResponseEntity.ok(new ResponseWrapper("Successfully deleted"));
     }
 
     private MailDTO createEmail(UserDTO userDTO){
