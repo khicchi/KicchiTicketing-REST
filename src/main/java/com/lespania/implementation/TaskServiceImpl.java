@@ -44,11 +44,8 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<TaskDTO> listAllTasks() {
         List<Task> list = taskRepository.findAll();
-
-        return list.stream().map(taskMapper::convertToDto).collect(Collectors.toList());
-
-        //return list.stream().map(obj ->{return taskMapper.convertToDto(obj);}).collect(Collectors.toList());
-
+        return list.stream().map(obj ->mapperUtil.convert(obj,
+                                    new TaskDTO())).collect(Collectors.toList());
     }
 
     @Override
