@@ -5,6 +5,7 @@ import com.lespania.dto.TaskDTO;
 import com.lespania.entity.Task;
 import com.lespania.entity.User;
 import com.lespania.enums.Status;
+import com.lespania.exception.TicketingProjectException;
 import com.lespania.mapper.ProjectMapper;
 import com.lespania.mapper.TaskMapper;
 import com.lespania.repository.TaskRepository;
@@ -34,12 +35,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTO findById(Long id) {
-        Optional<Task> task = taskRepository.findById(id);
-        if(task.isPresent()){
-            return taskMapper.convertToDto(task.get());
-        }
-        return null;
+    public TaskDTO findById(Long id) throws TicketingProjectException {
+        Task task = taskRepository.findById(id).orElseThrow(() ->
+                                        new TicketingProjectException("Task does not exists"));
+        return mapperUtil.convert(task,new TaskDTO());
     }
 
     @Override
