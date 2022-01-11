@@ -5,12 +5,15 @@ import com.lespania.dto.UserDTO;
 import com.lespania.entity.Project;
 import com.lespania.entity.User;
 import com.lespania.enums.Status;
+import com.lespania.exception.TicketingProjectException;
 import com.lespania.mapper.ProjectMapper;
 import com.lespania.mapper.UserMapper;
 import com.lespania.repository.ProjectRepository;
+import com.lespania.repository.UserRepository;
 import com.lespania.service.ProjectService;
 import com.lespania.service.TaskService;
 import com.lespania.service.UserService;
+import com.lespania.util.MapperUtil;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -21,48 +24,63 @@ import java.util.stream.Collectors;
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
-    private ProjectMapper projectMapper;
+    private UserRepository userRepository;
     private ProjectRepository projectRepository;
-    private UserMapper userMapper;
     private UserService userService;
     private TaskService taskService;
+    private MapperUtil mapperUtil;
 
-    public ProjectServiceImpl(ProjectMapper projectMapper, ProjectRepository projectRepository, UserMapper userMapper, UserService userService, TaskService taskService) {
-        this.projectMapper = projectMapper;
+    public ProjectServiceImpl(UserRepository userRepository, ProjectRepository projectRepository,
+                              UserService userService, TaskService taskService,
+                              MapperUtil mapperUtil) {
+        this.userRepository = userRepository;
         this.projectRepository = projectRepository;
-        this.userMapper = userMapper;
         this.userService = userService;
         this.taskService = taskService;
+        this.mapperUtil = mapperUtil;
     }
 
     @Override
     public ProjectDTO getByProjectCode(String code) {
         Project project = projectRepository.findByProjectCode(code);
-        return projectMapper.convertToDto(project);
+        return mapperUtil.convert(project,new ProjectDTO());
     }
 
     @Override
     public List<ProjectDTO> listAllProjects() {
         List<Project> list = projectRepository.findAll(Sort.by("projectCode"));
-        return list.stream().map(obj -> projectMapper.convertToDto(obj)).collect(Collectors.toList());
+        return list.stream().map(obj -> mapperUtil.convert(obj,new ProjectDTO())).collect(Collectors.toList());
     }
 
     @Override
-    public Project save(ProjectDTO dto) {
-        dto.setProjectStatus(Status.OPEN);
-        Project obj = projectMapper.convertToEntity(dto);
-//        obj.setAssignedManager(userMapper.convertToEntity(dto.getAssignedManager()));
-        Project project = projectRepository.save(obj);
-        return project;
+    public ProjectDTO save(ProjectDTO dto) throws TicketingProjectException {
+
+        Project foundProject = projectRepository.findByProjectCode(dto.getProjectCode());
+
+        if(foundProject != null){
+            throw new TicketingProjectException("Project with this code already existing");
+        }
+
+        Project obj = mapperUtil.convert(dto,new Project());
+
+        Project createdProject = projectRepository.save(obj);
+
+        return mapperUtil.convert(createdProject,new ProjectDTO());
     }
 
     @Override
-    public void update(ProjectDTO dto) {
+    public ProjectDTO update(ProjectDTO dto) throws TicketingProjectException {
         Project project = projectRepository.findByProjectCode(dto.getProjectCode());
-        Project convertedProject = projectMapper.convertToEntity(dto);
-        convertedProject.setId(project.getId());
-        convertedProject.setProjectStatus(project.getProjectStatus());
-        projectRepository.save(convertedProject);
+
+        if(project == null){
+            throw new TicketingProjectException("Project does not exist");
+        }
+
+        Project convertedProject = mapperUtil.convert(dto,new Project());
+
+        Project updatedProject = projectRepository.save(convertedProject);
+
+        return mapperUtil.convert(updatedProject,new ProjectDTO());
     }
 
     @Override
@@ -73,7 +91,7 @@ public class ProjectServiceImpl implements ProjectService {
         project.setProjectCode(project.getProjectCode() +  "-" + project.getId());
         projectRepository.save(project);
 
-        taskService.deleteByProject(projectMapper.convertToDto(project));
+        taskService.deleteByProject(mapperUtil.convert(project,new ProjectDTO()));
     }
 
     @Override
@@ -87,11 +105,11 @@ public class ProjectServiceImpl implements ProjectService {
     public List<ProjectDTO> listAllProjectDetails() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         UserDTO currentUserDTO = userService.findByUserName(username);
-        User user = userMapper.convertToEntity(currentUserDTO);
+        User user = mapperUtil.convert(currentUserDTO,new User());
         List<Project> list = projectRepository.findAllByAssignedManager(user);
 
         return list.stream().map(project -> {
-            ProjectDTO obj = projectMapper.convertToDto(project);
+            ProjectDTO obj = mapperUtil.convert(project,new ProjectDTO());
             obj.setUnfinishedTaskCounts(taskService.totalNonCompletedTasks(project.getProjectCode()));
             obj.setCompleteTaskCounts(taskService.totalCompletedTasks(project.getProjectCode()));
             return obj;
@@ -101,7 +119,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<ProjectDTO> readAllByAssignedManager(User user) {
         List<Project> list = projectRepository.findAllByAssignedManager(user);
-        return list.stream().map(obj ->projectMapper.convertToDto(obj)).collect(Collectors.toList());
+        return list.stream().map(obj ->mapperUtil.convert(obj,new ProjectDTO())).collect(Collectors.toList());
     }
 
     @Override
@@ -109,7 +127,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         return projectRepository.findAllByProjectStatusIsNot(Status.COMPLETE)
                 .stream()
-                .map(project -> projectMapper.convertToDto(project))
+                .map(project -> mapperUtil.convert(project,new ProjectDTO()))
                 .collect(Collectors.toList());
     }
 }
