@@ -3,6 +3,7 @@ package com.lespania.service;
 import com.lespania.dto.ProjectDTO;
 import com.lespania.entity.Project;
 import com.lespania.entity.User;
+import com.lespania.exception.TicketingProjectException;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ public interface ProjectService {
 
     List<ProjectDTO> listAllProjects();
 
-    Project save(ProjectDTO dto);
+    ProjectDTO save(ProjectDTO dto) throws TicketingProjectException;
 
     void update(ProjectDTO dto);
 
