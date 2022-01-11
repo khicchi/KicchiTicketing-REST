@@ -86,11 +86,15 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void deleteByProject(ProjectDTO project) {
-
         List<TaskDTO> taskDTOS = listAllByProject(project);
-        taskDTOS.forEach(taskDTO -> delete(taskDTO.getId()));
+        taskDTOS.forEach(taskDTO -> {
+            try {
+                delete(taskDTO.getId());
+            } catch (TicketingProjectException e) {
+                e.printStackTrace();
+            }
+        });
     }
-
 
     public List<TaskDTO> listAllByProject(ProjectDTO project){
 
