@@ -67,12 +67,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void delete(long id) {
-        Optional<Task> foundTask =  taskRepository.findById(id);
-        if(foundTask.isPresent()){
-            foundTask.get().setIsDeleted(true);
-            taskRepository.save(foundTask.get());
-        }
+    public void delete(long id) throws TicketingProjectException {
+        Task foundTask = taskRepository.findById(id).orElseThrow(() ->
+                                    new TicketingProjectException("Task does not exists"));
+        foundTask.setIsDeleted(true);
+        taskRepository.save(foundTask);
     }
 
     @Override
