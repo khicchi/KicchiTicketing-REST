@@ -19,7 +19,7 @@ public interface ProjectService {
 
     void delete(String code) throws TicketingProjectException;
 
-    void complete(String projectCode);
+    ProjectDTO complete(String projectCode) throws TicketingProjectException;
 
     List<ProjectDTO> listAllProjectDetails();
 

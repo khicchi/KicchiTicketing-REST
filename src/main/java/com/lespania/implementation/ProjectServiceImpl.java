@@ -101,10 +101,18 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void complete(String projectCode) {
+    public ProjectDTO complete(String projectCode) throws TicketingProjectException {
+
         Project project = projectRepository.findByProjectCode(projectCode);
+
+        if(project == null){
+            throw new TicketingProjectException("Project does not exist");
+        }
+
         project.setProjectStatus(Status.COMPLETE);
-        projectRepository.save(project);
+        Project completedProject = projectRepository.save(project);
+
+        return mapperUtil.convert(completedProject,new ProjectDTO());
     }
 
     @Override
