@@ -2,6 +2,7 @@ package com.lespania.implementation;
 
 import com.lespania.dto.RoleDTO;
 import com.lespania.entity.Role;
+import com.lespania.exception.TicketingProjectException;
 import com.lespania.mapper.RoleMapper;
 import com.lespania.repository.RoleRepository;
 import com.lespania.service.RoleService;
@@ -31,8 +32,9 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public RoleDTO findById(Long id) {
-        Role role = roleRepository.findById(id).get();
-        return roleMapper.convertToDto(role);
+    public RoleDTO findById(Long id) throws TicketingProjectException {
+        Role role = roleRepository.findById(id).orElseThrow(() ->
+                        new TicketingProjectException("Role does not exists"));
+        return mapperUtil.convert(role,new RoleDTO());
     }
 }
